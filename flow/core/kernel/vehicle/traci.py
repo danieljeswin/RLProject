@@ -1110,7 +1110,6 @@ class TraCIVehicle(KernelVehicle):
             frac = [val[1] for val in self.master_kernel.network.rts[edge]]
             route_id = 'route{}_{}'.format(edge, np.random.choice(
                 [i for i in range(num_routes)], size=1, p=frac)[0])
-
         self.kernel_api.vehicle.addFull(
             veh_id,
             route_id,

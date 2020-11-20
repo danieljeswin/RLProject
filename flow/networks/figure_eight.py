@@ -126,7 +126,7 @@ class FigureEightNetwork(Network):
         edges = [{
             "id": "bottom",
             "type": "edgeType",
-            "priority": "78",
+            "priority": 78,
             "from": "bottom",
             "to": "center",
             "length": intersection_edgelen / 2
