@@ -27,48 +27,70 @@ N_ROLLOUTS = 20
 # number of parallel workers
 N_CPUS = 2
 
-# We place one autonomous vehicle and 13 human-driven vehicles in the network
 vehicles = VehicleParams()
-vehicles.add(
-    veh_id='human',
-    acceleration_controller=(IDMController, {
-        'noise': 0.2
-    }),
-    routing_controller=(ContinuousRouter, {}),
-    car_following_params=SumoCarFollowingParams(
-        speed_mode="obey_safe_speed",
-        decel=1.5,
-    ),
-    num_vehicles=6)
-vehicles.add(
-    veh_id='rl',
-    acceleration_controller=(RLController, {}),
-    routing_controller=(ContinuousRouter, {}),
-    car_following_params=SumoCarFollowingParams(
-        speed_mode="obey_safe_speed",
-        decel=1.5,
-    ),
-    num_vehicles=1)
-vehicles.add(
-    veh_id='human2',
-    acceleration_controller=(IDMController, {
-        'noise': 0.2
-    }),
-    routing_controller=(ContinuousRouter, {}),
-    car_following_params=SumoCarFollowingParams(
-        speed_mode="obey_safe_speed",
-        decel=1.5,
-    ),
-    num_vehicles=6)
-vehicles.add(
-    veh_id='rl1',
-    acceleration_controller=(RLController, {}),
-    routing_controller=(ContinuousRouter, {}),
-    car_following_params=SumoCarFollowingParams(
-        speed_mode="obey_safe_speed",
-        decel=1.5,
-    ),
-    num_vehicles=1)
+for i in range(7):
+    vehicles.add(
+        veh_id='human' + str(i),
+        acceleration_controller=(IDMController, {
+            'noise': 0.2
+        }),
+        routing_controller=(ContinuousRouter, {}),
+        car_following_params=SumoCarFollowingParams(
+            speed_mode="obey_safe_speed",
+            decel=1.5,
+        ),
+        num_vehicles=1)
+    vehicles.add(
+        veh_id='rl' + str(i),
+        acceleration_controller=(RLController, {}),
+        routing_controller=(ContinuousRouter, {}),
+        car_following_params=SumoCarFollowingParams(
+            speed_mode="obey_safe_speed",
+            decel=1.5,
+        ),
+        num_vehicles=1)
+
+
+# vehicles.add(
+#     veh_id='human',
+#     acceleration_controller=(IDMController, {
+#         'noise': 0.2
+#     }),
+#     routing_controller=(ContinuousRouter, {}),
+#     car_following_params=SumoCarFollowingParams(
+#         speed_mode="obey_safe_speed",
+#         decel=1.5,
+#     ),
+#     num_vehicles=6)
+# vehicles.add(
+#     veh_id='rl',
+#     acceleration_controller=(RLController, {}),
+#     routing_controller=(ContinuousRouter, {}),
+#     car_following_params=SumoCarFollowingParams(
+#         speed_mode="obey_safe_speed",
+#         decel=1.5,
+#     ),
+#     num_vehicles=1)
+# vehicles.add(
+#     veh_id='human2',
+#     acceleration_controller=(IDMController, {
+#         'noise': 0.2
+#     }),
+#     routing_controller=(ContinuousRouter, {}),
+#     car_following_params=SumoCarFollowingParams(
+#         speed_mode="obey_safe_speed",
+#         decel=1.5,
+#     ),
+#     num_vehicles=6)
+# vehicles.add(
+#     veh_id='rl1',
+#     acceleration_controller=(RLController, {}),
+#     routing_controller=(ContinuousRouter, {}),
+#     car_following_params=SumoCarFollowingParams(
+#         speed_mode="obey_safe_speed",
+#         decel=1.5,
+#     ),
+#     num_vehicles=1)
 
 flow_params = dict(
     # name of the experiment
@@ -87,6 +109,7 @@ flow_params = dict(
     sim=SumoParams(
         sim_step=0.1,
         render=False,
+        restart_instance=True
     ),
 
     # environment related parameters (see flow.core.params.EnvParams)
@@ -137,7 +160,7 @@ def setup_exps():
     config["num_workers"] = N_CPUS
     config["train_batch_size"] = HORIZON * N_ROLLOUTS
     config["gamma"] = 0.999  # discount rate
-    config["model"].update({"fcnet_hiddens": [10, 5]})
+    config["model"].update({"fcnet_hiddens": [20, 15]})
     config["use_gae"] = True
     config["lambda"] = 0.97
     config["kl_target"] = 0.02
@@ -173,7 +196,7 @@ trials = run_experiments({
         "checkpoint_at_end": True,
         "max_failures": 999,
         "stop": {
-            "training_iteration": 300,
+            "training_iteration": 1000,
         },
     }
 })
